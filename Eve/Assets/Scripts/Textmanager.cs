@@ -14,6 +14,7 @@ public class Textmanager : MonoBehaviour
     public int endline;
     public bool active;
     public TextAsset blank;
+    public string story;
 
     // Start is called before the first frame update
     void Start()
@@ -45,19 +46,20 @@ public class Textmanager : MonoBehaviour
         {
             return;
         }
-        theText.text = textlines[currline];
-
-        if(currline == endline)
-        {
-            DisableTextBox();
-        }
     }
 
 
     public void EnableTextBox()
     {
+
+        
         textbox.SetActive(true);
         active = true;
+        theText.text = textlines[currline];
+        story = theText.text; 
+        theText.text = "";
+        StartCoroutine ("PlayText");
+        currline++;
     }
 
     public void DisableTextBox()
@@ -65,7 +67,7 @@ public class Textmanager : MonoBehaviour
         textbox.SetActive(false);
         active = false;
         textlines = new string[]{"  ", "  "};
-        theText.text = textlines[currline];
+        theText.text = "";
     }
     
     public void Reload(TextAsset texts)
@@ -82,15 +84,29 @@ public class Textmanager : MonoBehaviour
         print("testing");
         if (active)
         {
-            currline++;
+            
             if(currline < endline)
             {
+            
                 theText.text = textlines[currline];
+                story = theText.text; 
+                theText.text = "";
+                StartCoroutine ("PlayText");
+                currline++;
             }
             else
             {
                 DisableTextBox();
             }
+           
         }
     }
+    IEnumerator PlayText()
+	{
+		foreach (char c in story) 
+		{
+			theText.text += c;
+			yield return new WaitForSeconds (0.125f);
+		}
+	}
 }
